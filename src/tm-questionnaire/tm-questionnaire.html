@@ -12,11 +12,108 @@
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
 
 <link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-query.html">
+
+<dom-module id="tm-questionnaire-inst">
+  <template>
+    <style>
+
+    </style>
+
+    <paper-card>
+      questionnaire [[questionnaire.title]]
+    </paper-card>
+  </template>
+  <script>
+  (function(Polymer) {
+    Polymer({
+
+      is: 'tm-questionnaire-inst',
+
+      properties: {
+        questionnaire: {
+          type: Object,
+          notify:true
+        }
+      },
+      observers: [
+        'debug(items)'
+      ],
+      debug: function(o) {
+        console.log({m:'Items', o:o});
+      },
+      ready: function() {
+        console.log('tm-questionnaire-inst has been created.');
+      }
+    });
+  })(window.Polymer);
+  </script>
+</dom-module>
+
+<dom-module id="tm-selector">
+  <template>
+    <style>
+
+    </style>
+
+    <paper-dropdown-menu label="[[label]]">
+      <paper-menu attr-for-selected="value" selected="{{selected}}" class="dropdown-content">
+        <template is="dom-repeat" items="{{items}}">
+          <paper-item value="[[item.$key]]">[[item.title]]</paper-item>
+        </template>
+      </paper-menu>
+    </paper-dropdown-menu>
+
+  </template>
+  <script>
+    (function(Polymer) {
+      Polymer({
+
+        is: 'tm-selector',
+
+        properties: {
+          label: {
+            type: String,
+            notify:true
+          },
+          items: {
+            type:Array,
+            notify:true
+          },
+          selected: {
+            type: String,
+            notify:true
+          }
+        },
+        observers: [
+          'debug(items)',
+          '_itemsChanged(items.splices)'
+        ],
+        _itemsChanged: function(items) {
+          console.log('ARRAY CHANGED');
+          console.log(items);
+          if ((this.selected === undefined || this.selected === '') && items !== undefined)
+          {
+            this.selected = this.items[0].$key;
+          }
+        },
+        debug: function(o) {
+          // console.log({m:'Items', o:o});
+          // console.log({m:'Items Length' +  o.length});
+        },
+        ready: function() {
+          console.log('tm-selector has been created.');
+        }
+      });
+    })(window.Polymer);
+  </script>
+</dom-module>
 
 <dom-module id="tm-questionnaire">
   <template>
@@ -42,24 +139,40 @@
     </style>
 
     <firebase-app
-      name="questionnaire-f54f6-aaa"
+      name="questionnaire-f54f6"
       api-key="AIzaSyCFp-qmqmnzZr_XRNVW3GnkTyk18ZlwW0s"
       auth-domain="questionnaire-f54f6.firebaseapp.com"
       database-url="https://questionnaire-f54f6.firebaseio.com">
     </firebase-app>
 
-    <firebase-auth
-      id="aaa"
-      app-name="questionnaire-f54f6-aaa"
+    <firebase-auth id="aaa"
+      app-name="questionnaire-f54f6"
       user="{{user}}"
       signed-in="{{signedIn}}"
       provider="google"></firebase-auth>
 
-    <firebase-query
-      id="pressiontationsMain"
-      app-name="let-me-know-stuff-9a516"
-      path="/tm-presentation/presentations"
-      data="{{presentations}}">
+    <firebase-query id="questionnaireList"
+      app-name="questionnaire-f54f6"
+      path="/questionnaire"
+      data="{{questionnaires}}">
+    </firebase-query>
+
+    <firebase-document id="questionnaireObject"
+      app-name="questionnaire-f54f6"
+      path="/questionnaire/[[questionnaireKey]]"
+      data="{{questionnaire}}">
+    </firebase-document>
+
+    <firebase-query id="instanceList"
+      app-name="questionnaire-f54f6"
+      path="/instance/[[questionnaireKey]]"
+      data="{{instances}}">
+    </firebase-query>
+
+    <firebase-query id="pageList"
+      app-name="questionnaire-f54f6"
+      path="/page/[[questionnaireKey]]"
+      data="{{pages}}">
     </firebase-query>
 
     <paper-drawer-panel id="drawer" force-narrow>
@@ -68,8 +181,10 @@
           <div class="title">Menu</div>
         </paper-toolbar>
         <paper-menu id="menu" selected="{{selected}}">
-          <paper-item>Item 1</paper-item>
-          <paper-item>Item 2</paper-item>
+          <paper-item>Sign In</paper-item>
+          <paper-item>Select</paper-item>
+          <paper-item>Edit</paper-item>
+          <paper-item>Run</paper-item>
         </paper-menu>
       </paper-header-panel>
 
@@ -91,12 +206,13 @@
           </div>
           <div class="page">
             <div class="item"><paper-input label="One" value="AAA"></paper-input></div>
-            <div class="item"><paper-input label="Two" value="BBB"></paper-input></div>
+            <div class="item"><paper-input label="QuestionnaireKey" value="[[questionnaireKey]]"></paper-input></div>
+            <tm-selector label="Questionnaire" items="{{questionnaires}}" selected="{{questionnaireKey}}" ></tm-selector>
+            <tm-selector label="Instance" items="{{instances}}" selected="{{instanceKey}}" ></tm-selector>
+            <tm-selector label="Page" items="{{pages}}" selected="{{pageKey}}" ></tm-selector>
           </div>
           <div class="page">
-            <h2>Hello [[name]]</h2>
-            <paper-input label="Name" value="{{name}}"></paper-input>
-            <paper-card>Other Stuff</paper-card>
+            <tm-questionnaire-inst questionnaire="{{questionnaire}}"></tm-questionnaire-inst>
           </div>
         </iron-pages>
 
@@ -108,51 +224,94 @@
   </template>
 
   <script>
-    Polymer({
-
-      is: 'tm-questionnaire',
-
-      properties: {
-        signedIn : {
-          type: Boolean,
-          notify:true,
-          value: false
+    (function(Polymer) {
+      Polymer({
+        properties: {
+          questionnaires: {
+            type:Array,
+            notify:true
+          },
+          questionnaireKey: {
+            type:String,
+            notify:true
+          },
+          questionnaire: {
+            type:Object,
+            value: {
+              title: 'a questionnaire'
+            }
+          },
+          instances: {
+            type:Array,
+            notify:true
+          },
+          instanceKey: {
+            type:String,
+            notify:true
+          },
+          instance: {
+            type:Object,
+            value: {
+              title: 'a page'
+            }
+          },
+          pages: {
+            type:Array,
+            notify:true
+          },
+          pageKey: {
+            type:String,
+            notify:true
+          },
+          page: {
+            type:Object,
+            value: {
+              title: 'a page'
+            }
+          },
+          signedIn : {
+            type: Boolean,
+            notify:true,
+            value: false
+          },
+          user : {
+            type:Object,
+            notify:true
+          },
+          name: {
+            type: String,
+            value: 'Jayne',
+            notify: true
+          },
+          selected: {
+            type: Number,
+            value: 1,
+            notify: true
+          }
         },
-        user : {
-          type:Object,
-          notify:true
+        observers: [
+          'debug(questionnaires)'
+        ],
+        listeners: {
+          'menu.iron-select': 'menuSelected'
         },
-        name: {
-          type: String,
-          value: 'Jayne',
-          notify: true
+        debug: function(object) {
+          console.log({m:'questionnaires', o:object});
         },
-        selected: {
-          type: Number,
-          value: 0,
-          notify: true
+        _getFirstName: function(user) {
+          return (user === null ? "" : user.displayName.split(' ')[0]);
+        },
+        menuSelected: function() {
+          console.log('sadfsadfsdaf');
+          this.$.drawer.closeDrawer();
+        },
+        ready: function() {
+          //this.$.aaa.signInWithEmailAndPassword('tim@mcmaster.id.au', 'asdfgh');
+          //this.$.aaa.signInWithPopup();
         }
-      },
-      observers: [
-        'debug(user)'
-      ],
-      listeners: {
-        'menu.iron-select': 'menuSelected'
-      },
-      debug: function(object) {
-        console.log({m:'user', o:object});
-      },
-      _getFirstName: function(user) {
-        return (user === null ? "" : user.displayName.split(' ')[0]);
-      },
-      menuSelected: function() {
-        console.log('sadfsadfsdaf');
-        this.$.drawer.closeDrawer();
-      },
-      ready: function() {
-        // this.$.aaa.signInWithEmailAndPassword('tim@mcmaster.id.au', 'asdfgh');
-        // this.$.aaa.signInWithPopup();
-      }
-    });
+      });
+    })(window.Polymer);
+    (function(Polymer) {
+    })(window.Polymer);
   </script>
 </dom-module>
