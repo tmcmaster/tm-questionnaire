@@ -1,0 +1,7 @@
+{
+  "name": "tm-questionnaire",
+  "short_name": "tm-questionnaire",
+  "description": "Questionnaire application driven by data",
+  "start_url": "/",
+  "display": "standalone"
+}
