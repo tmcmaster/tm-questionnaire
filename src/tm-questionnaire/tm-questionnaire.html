@@ -1,5 +1,17 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-drawer-panel/paper-drawer-panel.html">
+<link rel="import" href="../../bower_components/paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
 
 <dom-module id="tm-questionnaire">
   <template>
@@ -7,9 +19,64 @@
       :host {
         display: block;
       }
+      .page {
+        display:inline-block;
+        box-sizing:border-box;
+        height:100%;
+        width:100%;
+        padding:10px;
+      }
+      .item {
+        display:inline-block;
+        width:50%;
+        margin:0;
+        padding:10px;
+        float:left;
+        box-sizing:border-box;
+      }
     </style>
-    <h2>Hello [[name]]</h2>
-    <paper-input label="Name" value="{{name}}"></paper-input>
+
+    <paper-drawer-panel id="drawer" force-narrow>
+      <paper-header-panel drawer>
+        <paper-toolbar>
+          <div class="title">Menu</div>
+        </paper-toolbar>
+        <paper-menu id="menu" selected="{{selected}}">
+          <paper-item>Item 1</paper-item>
+          <paper-item>Item 2</paper-item>
+        </paper-menu>
+      </paper-header-panel>
+
+      <paper-scroll-header-panel main>
+
+        <paper-toolbar>
+          <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
+          <div class="flex title">Questionnaire</div>
+          <paper-icon-button icon="search"></paper-icon-button>
+          <paper-icon-button icon="more-vert"></paper-icon-button>
+        </paper-toolbar>
+
+        <iron-pages class="content" selected="{{selected}}">
+          <div class="page">
+            <h2>Hello [[name]]</h2>
+            <paper-input label="Name" value="{{name}}"></paper-input>
+          </div>
+          <div class="page">
+            <div class="item"><paper-input label="One" value="AAA"></paper-input></div>
+            <div class="item"><paper-input label="Two" value="BBB"></paper-input></div>
+          </div>
+          <div class="page">
+            <h2>Hello [[name]]</h2>
+            <paper-input label="Name" value="{{name}}"></paper-input>
+            <paper-card>Other Stuff</paper-card>
+          </div>
+        </iron-pages>
+
+
+      </paper-scroll-header-panel>
+
+    </paper-drawer-panel>
+
   </template>
 
   <script>
@@ -23,8 +90,19 @@
           value: 'Jayne',
           notify: true
         },
+        selected: {
+          type: Number,
+          value: 1,
+          notify: true
+        }
       },
-
+      listeners: {
+        'menu.iron-select': 'menuSelected'
+      },
+      menuSelected: function() {
+        console.log('sadfsadfsdaf');
+        this.$.drawer.closeDrawer();
+      }
     });
   </script>
 </dom-module>
