@@ -13,6 +13,11 @@
 <link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 
+<link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-query.html">
+
 <dom-module id="tm-questionnaire">
   <template>
     <style>
@@ -36,6 +41,27 @@
       }
     </style>
 
+    <firebase-app
+      name="questionnaire-f54f6-aaa"
+      api-key="AIzaSyCFp-qmqmnzZr_XRNVW3GnkTyk18ZlwW0s"
+      auth-domain="questionnaire-f54f6.firebaseapp.com"
+      database-url="https://questionnaire-f54f6.firebaseio.com">
+    </firebase-app>
+
+    <firebase-auth
+      id="aaa"
+      app-name="questionnaire-f54f6-aaa"
+      user="{{user}}"
+      signed-in="{{signedIn}}"
+      provider="google"></firebase-auth>
+
+    <firebase-query
+      id="pressiontationsMain"
+      app-name="let-me-know-stuff-9a516"
+      path="/tm-presentation/presentations"
+      data="{{presentations}}">
+    </firebase-query>
+
     <paper-drawer-panel id="drawer" force-narrow>
       <paper-header-panel drawer>
         <paper-toolbar>
@@ -58,8 +84,10 @@
 
         <iron-pages class="content" selected="{{selected}}">
           <div class="page">
-            <h2>Hello [[name]]</h2>
+            <h2>Hello [[_getFirstName(user)]]</h2>
             <paper-input label="Name" value="{{name}}"></paper-input>
+            <paper-input label="Signed In" diabled value="{{signedIn}}"></paper-input>
+            <paper-input label="Email" disabled value="{{user.email}}"></paper-input>
           </div>
           <div class="page">
             <div class="item"><paper-input label="One" value="AAA"></paper-input></div>
@@ -85,6 +113,15 @@
       is: 'tm-questionnaire',
 
       properties: {
+        signedIn : {
+          type: Boolean,
+          notify:true,
+          value: false
+        },
+        user : {
+          type:Object,
+          notify:true
+        },
         name: {
           type: String,
           value: 'Jayne',
@@ -92,16 +129,29 @@
         },
         selected: {
           type: Number,
-          value: 1,
+          value: 0,
           notify: true
         }
       },
+      observers: [
+        'debug(user)'
+      ],
       listeners: {
         'menu.iron-select': 'menuSelected'
+      },
+      debug: function(object) {
+        console.log({m:'user', o:object});
+      },
+      _getFirstName: function(user) {
+        return (user === null ? "" : user.displayName.split(' ')[0]);
       },
       menuSelected: function() {
         console.log('sadfsadfsdaf');
         this.$.drawer.closeDrawer();
+      },
+      ready: function() {
+        // this.$.aaa.signInWithEmailAndPassword('tim@mcmaster.id.au', 'asdfgh');
+        // this.$.aaa.signInWithPopup();
       }
     });
   </script>
