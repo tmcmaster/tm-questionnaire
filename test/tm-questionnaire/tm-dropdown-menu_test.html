@@ -8,13 +8,13 @@
     <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../../web-component-tester/browser.js"></script>
 
-    <link rel="import" href="../../src/tm-questionnaire/tm-questionnaire-app.html">
+    <link rel="import" href="../../src/tm-questionnaire/tm-dropdown-menu.html">
   </head>
   <body>
 
     <test-fixture id="basic">
       <template>
-        <tm-questionnaire-app></tm-questionnaire-app>
+        <tm-dropdown-menu></tm-dropdown-menu>
       </template>
     </test-fixture>
 
@@ -23,7 +23,7 @@
 
         test('instantiating the element works', function() {
           var element = fixture('basic');
-          assert.equal(element.is, 'tm-questionnaire-app');
+          assert.equal(element.is, 'tm-dropdown-menu');
         });
 
       });

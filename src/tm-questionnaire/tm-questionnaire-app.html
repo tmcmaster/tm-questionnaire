@@ -13,14 +13,15 @@
 <link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
 
 <link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-query.html">
 
-<dom-module id="tm-questionnaire-inst">
+<link rel="import" href="tm-dropdown-menu.html">
+
+<dom-module id="tm-questionnaire">
   <template>
     <style>
 
@@ -34,7 +35,7 @@
   (function(Polymer) {
     Polymer({
 
-      is: 'tm-questionnaire-inst',
+      is: 'tm-questionnaire',
 
       properties: {
         questionnaire: {
@@ -56,66 +57,9 @@
   </script>
 </dom-module>
 
-<dom-module id="tm-selector">
-  <template>
-    <style>
 
-    </style>
 
-    <paper-dropdown-menu label="[[label]]">
-      <paper-menu attr-for-selected="value" selected="{{selected}}" class="dropdown-content">
-        <template is="dom-repeat" items="{{items}}">
-          <paper-item value="[[item.$key]]">[[item.title]]</paper-item>
-        </template>
-      </paper-menu>
-    </paper-dropdown-menu>
-
-  </template>
-  <script>
-    (function(Polymer) {
-      Polymer({
-
-        is: 'tm-selector',
-
-        properties: {
-          label: {
-            type: String,
-            notify:true
-          },
-          items: {
-            type:Array,
-            notify:true
-          },
-          selected: {
-            type: String,
-            notify:true
-          }
-        },
-        observers: [
-          'debug(items)',
-          '_itemsChanged(items.splices)'
-        ],
-        _itemsChanged: function(items) {
-          console.log('ARRAY CHANGED');
-          console.log(items);
-          if ((this.selected === undefined || this.selected === '') && items !== undefined)
-          {
-            this.selected = this.items[0].$key;
-          }
-        },
-        debug: function(o) {
-          // console.log({m:'Items', o:o});
-          // console.log({m:'Items Length' +  o.length});
-        },
-        ready: function() {
-          console.log('tm-selector has been created.');
-        }
-      });
-    })(window.Polymer);
-  </script>
-</dom-module>
-
-<dom-module id="tm-questionnaire">
+<dom-module id="tm-questionnaire-app">
   <template>
     <style>
       :host {
@@ -145,7 +89,7 @@
       database-url="https://questionnaire-f54f6.firebaseio.com">
     </firebase-app>
 
-    <firebase-auth id="aaa"
+    <firebase-auth id="auth"
       app-name="questionnaire-f54f6"
       user="{{user}}"
       signed-in="{{signedIn}}"
@@ -189,7 +133,6 @@
       </paper-header-panel>
 
       <paper-scroll-header-panel main>
-
         <paper-toolbar>
           <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
           <div class="flex title">Questionnaire</div>
@@ -200,23 +143,22 @@
         <iron-pages class="content" selected="{{selected}}">
           <div class="page">
             <h2>Hello [[_getFirstName(user)]]</h2>
-            <paper-input label="Name" value="{{name}}"></paper-input>
-            <paper-input label="Signed In" diabled value="{{signedIn}}"></paper-input>
+            <paper-input label="Name" disabled value="{{user.displayName}}"></paper-input>
+            <paper-input label="Signed In" disabled value="{{signedIn}}"></paper-input>
             <paper-input label="Email" disabled value="{{user.email}}"></paper-input>
           </div>
           <div class="page">
-            <div class="item"><paper-input label="One" value="AAA"></paper-input></div>
-            <div class="item"><paper-input label="QuestionnaireKey" value="[[questionnaireKey]]"></paper-input></div>
-            <tm-selector label="Questionnaire" items="{{questionnaires}}" selected="{{questionnaireKey}}" ></tm-selector>
-            <tm-selector label="Instance" items="{{instances}}" selected="{{instanceKey}}" ></tm-selector>
-            <tm-selector label="Page" items="{{pages}}" selected="{{pageKey}}" ></tm-selector>
+            <div class="item"><paper-input label="Questionnaire Key" value="[[questionnaireKey]]"></paper-input></div>
+            <div class="item"><paper-input label="Instance Key" value="[[instanceKey]]"></paper-input></div>
+            <div class="item"><paper-input label="Page Key" value="[[pageKey]]"></paper-input></div>
+            <tm-dropdown-menu label="Questionnaire" items="{{questionnaires}}" selected="{{questionnaireKey}}" ></tm-dropdown-menu>
+            <tm-dropdown-menu label="Instance" items="{{instances}}" selected="{{instanceKey}}" ></tm-dropdown-menu>
+            <tm-dropdown-menu label="Page" items="{{pages}}" selected="{{pageKey}}" ></tm-dropdown-menu>
           </div>
           <div class="page">
             <tm-questionnaire-inst questionnaire="{{questionnaire}}"></tm-questionnaire-inst>
           </div>
         </iron-pages>
-
-
       </paper-scroll-header-panel>
 
     </paper-drawer-panel>
@@ -226,6 +168,7 @@
   <script>
     (function(Polymer) {
       Polymer({
+        is: 'tm-questionnaire-app',
         properties: {
           questionnaires: {
             type:Array,
@@ -252,7 +195,7 @@
           instance: {
             type:Object,
             value: {
-              title: 'a page'
+              title: 'an instance'
             }
           },
           pages: {
@@ -278,11 +221,6 @@
             type:Object,
             notify:true
           },
-          name: {
-            type: String,
-            value: 'Jayne',
-            notify: true
-          },
           selected: {
             type: Number,
             value: 1,
@@ -306,8 +244,8 @@
           this.$.drawer.closeDrawer();
         },
         ready: function() {
-          //this.$.aaa.signInWithEmailAndPassword('tim@mcmaster.id.au', 'asdfgh');
-          //this.$.aaa.signInWithPopup();
+          //this.$.auth.signInWithEmailAndPassword('tim@mcmaster.id.au', 'asdfgh');
+          //this.$.auth.signInWithPopup();
         }
       });
     })(window.Polymer);

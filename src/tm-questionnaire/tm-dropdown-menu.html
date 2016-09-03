@@ -1,0 +1,64 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+
+<dom-module id="tm-dropdown-menu">
+  <template>
+    <style>
+    </style>
+
+    <paper-dropdown-menu label="[[label]]">
+      <paper-menu attr-for-selected="value" selected="{{selected}}" class="dropdown-content">
+        <template is="dom-repeat" items="{{items}}">
+          <paper-item value="[[item.$key]]">[[item.title]]</paper-item>
+        </template>
+      </paper-menu>
+    </paper-dropdown-menu>
+
+  </template>
+  <script>
+    (function(Polymer) {
+      Polymer({
+        is: 'tm-dropdown-menu',
+        properties: {
+          label: {
+            type: String,
+            notify:true
+          },
+          items: {
+            type:Array,
+            notify:true
+          },
+          selected: {
+            type: String,
+            notify:true
+          }
+        },
+        observers: [
+          'debug(items)',
+          '_itemsChanged(items.splices)'
+        ],
+        _itemsChanged: function(items) {
+          // console.log('ARRAY CHANGED');
+          // console.log(items);
+          if (items === undefined || items.length === 0) {
+            this.selected = '';
+          } else if ((this.selected === undefined || this.selected === '')) {
+            this.selected = this.items[0].$key;
+          } else if (this.items.indexOf(this.selected) < 0){
+            this.selected = this.items[0].$key;
+          }
+        },
+        debug: function(o) {
+          // console.log({m:'Items', o:o});
+          // console.log({m:'Items Length' +  o.length});
+        },
+        ready: function() {
+          console.log('tm-selector has been created.');
+        }
+      });
+    })(window.Polymer);
+  </script>
+</dom-module>
