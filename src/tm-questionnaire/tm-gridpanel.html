@@ -1,0 +1,83 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+
+<dom-module id="tm-gridpanel">
+  <template>
+    <style>
+    :host {
+      display:inline-block;
+      box-sizing:border-box;
+      //border:solid red 2px;
+      padding:10px;
+    }
+    .container.large ::content > * {
+      box-sizing:border-box;
+      //border:solid green 3px;
+      width:33.33%;
+      float:left;
+      padding:5px;
+    }
+    .container.small ::content > * {
+      //border:solid red 3px;
+      width:100%;
+    }
+    .container.medium ::content > * {
+      //border:solid blue 3px;
+      width:50%;
+    }
+    .container.medium ::content > .double {
+      //border:solid blue 3px;
+      width:100%;
+    }
+    .container.medium ::content > .triple {
+      //border:solid blue 3px;
+      width:100%;
+    }
+    .container.large ::content > .double {
+      //border:solid green 3px;
+      width:66.66%;
+    }
+    .container.large ::content > .triple {
+      //border:solid red 3px;
+      width:100%;
+    }
+
+    .container ::content > * {
+      //box-sizing:border-box;
+      //border:solid biue 5px;
+      float:left;
+    }
+  </style>
+
+  <div class$="container [[size]]">
+    <content/>
+  </div>
+
+  </template>
+  <script>
+    (function(Polymer) {
+      Polymer({
+        is: 'tm-gridpanel',
+        properties: {
+          size: {
+            type: String,
+            value: 'large',
+            notify: true
+          }
+        },
+        observers: [
+          'debug(items)'
+        ],
+        debug: function(o) {
+          console.log({m:'Items', o:o});
+        },
+        ready: function() {
+          console.log('tm-gridpanel has been created.');
+        }
+      });
+    })(window.Polymer);
+  </script>
+</dom-module>

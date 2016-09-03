@@ -20,44 +20,9 @@
 <link rel="import" href="../../bower_components/polymerfire/firebase-query.html">
 
 <link rel="import" href="tm-dropdown-menu.html">
-
-<dom-module id="tm-questionnaire">
-  <template>
-    <style>
-
-    </style>
-
-    <paper-card>
-      questionnaire [[questionnaire.title]]
-    </paper-card>
-  </template>
-  <script>
-  (function(Polymer) {
-    Polymer({
-
-      is: 'tm-questionnaire',
-
-      properties: {
-        questionnaire: {
-          type: Object,
-          notify:true
-        }
-      },
-      observers: [
-        'debug(items)'
-      ],
-      debug: function(o) {
-        console.log({m:'Items', o:o});
-      },
-      ready: function() {
-        console.log('tm-questionnaire-inst has been created.');
-      }
-    });
-  })(window.Polymer);
-  </script>
-</dom-module>
-
-
+<link rel="import" href="tm-gridpanel.html">
+<link rel="import" href="tm-app.html">
+<link rel="import" href="tm-firebase.html">
 
 <dom-module id="tm-questionnaire-app">
   <template>
@@ -80,9 +45,12 @@
         float:left;
         box-sizing:border-box;
       }
+      tm-gridpanel {
+        width:100%;
+      }
     </style>
 
-    <firebase-app
+    <!-- <firebase-app
       name="questionnaire-f54f6"
       api-key="AIzaSyCFp-qmqmnzZr_XRNVW3GnkTyk18ZlwW0s"
       auth-domain="questionnaire-f54f6.firebaseapp.com"
@@ -93,59 +61,105 @@
       app-name="questionnaire-f54f6"
       user="{{user}}"
       signed-in="{{signedIn}}"
-      provider="google"></firebase-auth>
+      provider="google"></firebase-auth> -->
 
-    <firebase-query id="questionnaireList"
-      app-name="questionnaire-f54f6"
-      path="/questionnaire"
-      data="{{questionnaires}}">
-    </firebase-query>
 
-    <firebase-document id="questionnaireObject"
-      app-name="questionnaire-f54f6"
-      path="/questionnaire/[[questionnaireKey]]"
-      data="{{questionnaire}}">
-    </firebase-document>
 
-    <firebase-query id="instanceList"
-      app-name="questionnaire-f54f6"
-      path="/instance/[[questionnaireKey]]"
-      data="{{instances}}">
-    </firebase-query>
+    <tm-app app-title="Questionnaire" titles="Authorisation,Select,Edit,Run" selected="0">
+      <div class="page">
+        <tm-firebase
+          app-name="questionnaire-f54f6"
+          app-key="AIzaSyCFp-qmqmnzZr_XRNVW3GnkTyk18ZlwW0s"
+          auth-domain="questionnaire-f54f6.firebaseapp.com"
+          database-url="https://questionnaire-f54f6.firebaseio.com"
+          provider="google">
 
-    <firebase-query id="pageList"
-      app-name="questionnaire-f54f6"
-      path="/page/[[questionnaireKey]]"
-      data="{{pages}}">
-    </firebase-query>
+          <firebase-query id="questionnaireList"
+            app-name="questionnaire-f54f6"
+            path="/questionnaire"
+            data="{{questionnaires}}">
+          </firebase-query>
 
-    <paper-drawer-panel id="drawer" force-narrow>
+          <firebase-document id="questionnaireObject"
+            app-name="questionnaire-f54f6"
+            path="/questionnaire/[[questionnaireKey]]"
+            data="{{questionnaire}}">
+          </firebase-document>
+
+          <firebase-query id="instanceList"
+            app-name="questionnaire-f54f6"
+            path="/instance/[[questionnaireKey]]"
+            data="{{instances}}">
+          </firebase-query>
+
+          <firebase-query id="pageList"
+            app-name="questionnaire-f54f6"
+            path="/page/[[questionnaireKey]]"
+            data="{{pages}}">
+          </firebase-query>
+
+        </tm-firebase>
+        <!-- <tm-gridpanel>
+          <h2 class="triple" style="text-align:center;margin:0">Hello [[_getFirstName(user)]]</h2>
+          <paper-input class="double" label="Name" disabled value="{{user.displayName}}"></paper-input>
+          <paper-input label="Signed In" disabled value="{{signedIn}}"></paper-input>
+          <paper-input class="double" label="Signed In" disabled value="{{signedIn}}"></paper-input>
+          <paper-input label="Signed In" disabled value="{{signedIn}}"></paper-input>
+          <paper-input label="Signed In" disabled value="{{signedIn}}"></paper-input>
+          <paper-input label="Signed In" disabled value="{{signedIn}}"></paper-input>
+          <paper-input class="triple" label="Email" disabled value="{{user.email}}"></paper-input>
+        </tm-gridpanel> -->
+      </div>
+      <div class="page">
+        <tm-gridpanel size="medium">
+          <paper-input label="Questionnaire Key" value="[[questionnaireKey]]"></paper-input>
+          <paper-input label="Instance Key" value="[[instanceKey]]"></paper-input>
+          <paper-input label="Page Key" value="[[pageKey]]"></paper-input>
+          <tm-dropdown-menu label="Questionnaire" items="{{questionnaires}}" selected="{{questionnaireKey}}" ></tm-dropdown-menu>
+          <tm-dropdown-menu label="Instance" items="{{instances}}" selected="{{instanceKey}}" ></tm-dropdown-menu>
+          <tm-dropdown-menu label="Page" items="{{pages}}" selected="{{pageKey}}" ></tm-dropdown-menu>
+        </tm-gridpanel>
+      </div>
+      <div class="page">
+        Page Three
+      </div>
+      <div class="page">
+        <tm-app titles="a,b,c,d,e,f,g" selected="2"></tm-app>
+      </div>
+    </tm-app>
+
+    <!-- <paper-drawer-panel id="drawer" force-narrow>
       <paper-header-panel drawer>
         <paper-toolbar>
           <div class="title">Menu</div>
         </paper-toolbar>
         <paper-menu id="menu" selected="{{selected}}">
-          <paper-item>Sign In</paper-item>
-          <paper-item>Select</paper-item>
-          <paper-item>Edit</paper-item>
-          <paper-item>Run</paper-item>
+          <template is="dom-repeat" items="{{titles}}">
+              <paper-item>{{item}}</paper-item>
+          </template>
         </paper-menu>
       </paper-header-panel>
 
       <paper-scroll-header-panel main>
         <paper-toolbar>
           <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
-          <div class="flex title">Questionnaire</div>
+          <div class="flex title">Questionnaire - [[pageTitle]]</div>
           <paper-icon-button icon="search"></paper-icon-button>
           <paper-icon-button icon="more-vert"></paper-icon-button>
         </paper-toolbar>
 
         <iron-pages class="content" selected="{{selected}}">
           <div class="page">
-            <h2>Hello [[_getFirstName(user)]]</h2>
-            <paper-input label="Name" disabled value="{{user.displayName}}"></paper-input>
-            <paper-input label="Signed In" disabled value="{{signedIn}}"></paper-input>
-            <paper-input label="Email" disabled value="{{user.email}}"></paper-input>
+            <tm-gridpanel>
+              <h2 class="triple" style="text-align:center;margin:0">Hello [[_getFirstName(user)]]</h2>
+              <paper-input class="double" label="Name" disabled value="{{user.displayName}}"></paper-input>
+              <paper-input label="Signed In" disabled value="{{signedIn}}"></paper-input>
+              <paper-input class="double" label="Signed In" disabled value="{{signedIn}}"></paper-input>
+              <paper-input label="Signed In" disabled value="{{signedIn}}"></paper-input>
+              <paper-input label="Signed In" disabled value="{{signedIn}}"></paper-input>
+              <paper-input label="Signed In" disabled value="{{signedIn}}"></paper-input>
+              <paper-input class="triple" label="Email" disabled value="{{user.email}}"></paper-input>
+            </tm-gridpanel>
           </div>
           <div class="page">
             <div class="item"><paper-input label="Questionnaire Key" value="[[questionnaireKey]]"></paper-input></div>
@@ -158,10 +172,13 @@
           <div class="page">
             <tm-questionnaire-inst questionnaire="{{questionnaire}}"></tm-questionnaire-inst>
           </div>
+          <div class="page">
+            <tm-app titles="a,b,c,d,e,f,g" selected="2"></tm-app>
+          </div>
         </iron-pages>
       </paper-scroll-header-panel>
 
-    </paper-drawer-panel>
+    </paper-drawer-panel> -->
 
   </template>
 
@@ -170,6 +187,11 @@
       Polymer({
         is: 'tm-questionnaire-app',
         properties: {
+          // titles: {
+          //   type: Array,
+          //   value: ['Sign In','Select','Edit','Run'],
+          //   notify: true
+          // },
           questionnaires: {
             type:Array,
             notify:true
@@ -212,44 +234,50 @@
               title: 'a page'
             }
           },
-          signedIn : {
-            type: Boolean,
-            notify:true,
-            value: false
-          },
-          user : {
-            type:Object,
-            notify:true
-          },
-          selected: {
-            type: Number,
-            value: 1,
-            notify: true
-          }
+          // signedIn : {
+          //   type: Boolean,
+          //   notify:true,
+          //   value: false
+          // },
+          // user : {
+          //   type:Object,
+          //   notify:true
+          // },
+          // selected: {
+          //   type: Number,
+          //   value: 0,
+          //   notify: true
+          // },
+          // pageTitle: {
+          //   type: String,
+          //   notify:true,
+          //   computed: '_getPageTitle(selected)'
+          // }
         },
         observers: [
           'debug(questionnaires)'
         ],
-        listeners: {
-          'menu.iron-select': 'menuSelected'
-        },
+        // listeners: {
+        //   'menu.iron-select': 'menuSelected'
+        // },
+        // _getPageTitle: function(newPage) {
+        //   return this.titles[newPage];
+        // },
         debug: function(object) {
           console.log({m:'questionnaires', o:object});
         },
-        _getFirstName: function(user) {
-          return (user === null ? "" : user.displayName.split(' ')[0]);
-        },
-        menuSelected: function() {
-          console.log('sadfsadfsdaf');
-          this.$.drawer.closeDrawer();
-        },
+        // _getFirstName: function(user) {
+        //   return (user === null ? "" : user.displayName.split(' ')[0]);
+        // },
+        // menuSelected: function() {
+        //   console.log('sadfsadfsdaf');
+        //   this.$.drawer.closeDrawer();
+        // },
         ready: function() {
           //this.$.auth.signInWithEmailAndPassword('tim@mcmaster.id.au', 'asdfgh');
           //this.$.auth.signInWithPopup();
         }
       });
-    })(window.Polymer);
-    (function(Polymer) {
     })(window.Polymer);
   </script>
 </dom-module>

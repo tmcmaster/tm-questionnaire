@@ -1,0 +1,89 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+
+<link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-auth.html">
+
+<link rel="import" href="tm-gridpanel.html">
+
+<dom-module id="tm-firebase">
+  <template>
+    <style>
+
+    </style>
+
+    <firebase-app
+      name="[[appName]]"
+      api-key="[[appKey]]"
+      auth-domain="[[authDomain]]"
+      database-url="[[databaseUrl]]">
+    </firebase-app>
+
+    <firebase-auth id="aaaaa"
+      app-name="[[appName]]"
+      user="{{user}}"
+      signed-in="{{signedIn}}"
+      provider="google">
+    </firebase-auth>
+
+    <tm-gridpanel size="medium">
+      <paper-input label="Name" disabled value="[[user.displayName]]"></paper-input>
+      <paper-input label="Email" disabled value="[[user.email]]"></paper-input>
+      <paper-input label="Signed In" disabled value="[[signedIn]]"></paper-input>
+      <paper-input label="Provider" disabled value="[[provider]]"></paper-input>
+      <paper-input label="App Name" disabled value="{{appName}}"></paper-input>
+      <paper-input label="App Key" disabled value="{{appKey}}"></paper-input>
+      <paper-input label="Auth Domain" disabled value="{{authDomain}}"></paper-input>
+      <paper-input label="Database URL" disabled value="{{databaseUrl}}"></paper-input>
+    </tm-gridpanel>
+  </template>
+  <script>
+  (function(Polymer) {
+    Polymer({
+      is: 'tm-firebase',
+      properties: {
+        appName: {
+          type: String,
+          notify:true
+        },
+        appKey: {
+          type: String,
+          notify:true
+        },
+        authDomain: {
+          type: String,
+          notify:true
+        },
+        databaseUrl: {
+          type: String,
+          notify:true
+        },
+        user: {
+          type: Object,
+          notify:true
+        },
+        signedIn: {
+          type: Boolean,
+          notify:true,
+          value: false
+        },
+        provider: {
+          type: String,
+          notify:true
+        }
+      },
+      observers: [
+        'debug(items)'
+      ],
+      debug: function(o) {
+        console.log({m:'Items', o:o});
+      },
+      ready: function() {
+        console.log('tm-firebase has been created.');
+        //this.$.aaaaa.signInWithPopup();
+      }
+    });
+  })(window.Polymer);
+  </script>
+</dom-module>
