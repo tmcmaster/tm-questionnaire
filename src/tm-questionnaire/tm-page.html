@@ -1,0 +1,74 @@
+<dom-module id="tm-page">
+  <template>
+    <style>
+      :host {
+        display:inline-block;
+        box-sizing:border-box;
+      }
+      h2 {
+        text-align:center
+      }
+    </style>
+
+    <firebase-document
+      app-name="questionnaire-f54f6"
+      path="/data/page/[[key]]"
+      data="{{object}}">
+    </firebase-document>
+
+    <firebase-query
+      app-name="questionnaire-f54f6"
+      path="/data/question"
+      order-by-child="page"
+      equal-to="[[key]]"
+      data="{{children}}">
+    </firebase-query>
+
+    <paper-card heading="[[object.title]]">
+      <tm-gridpanel size="medium">
+        <template is="dom-repeat" items="{{children}}">
+          <tm-question class="double" key="[[item.$key]]" title="[[item.title]]" type="[[item.type]]" instance="[[instance]]"></tm-question>
+        </template>
+      </tm-gridpanel>
+    </paper-card>
+  </template>
+
+  <script>
+    (function(Polymer) {
+      Polymer({
+        is: 'tm-page',
+        properties: {
+          object: {
+            type:Object,
+            notify:true
+          },
+          key: {
+            type:String,
+            notify:true
+          },
+          instance: {
+            type:String,
+            notify:true
+          },
+          children: {
+            type: Array,
+            notify: true
+          },
+          child: {
+            type: String,
+            notify: true
+          }
+        },
+        observers: [
+          'debug(children)'
+        ],
+        debug: function(object) {
+          console.log({m:'scratch', o:object});
+        },
+        ready: function() {
+          console.log('tm-scratch has been created.');
+        }
+      });
+    })(window.Polymer);
+  </script>
+</dom-module>

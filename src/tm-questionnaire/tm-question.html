@@ -1,0 +1,53 @@
+<dom-module id="tm-question">
+  <template>
+    <style>
+      :host {
+        display:inline-block;
+        box-sizing:border-box;
+      }
+      h2 {
+        text-align:center
+      }
+    </style>
+
+    <firebase-document
+      app-name="questionnaire-f54f6"
+      path="/data/answers/[[instance]]/[[key]]"
+      data="{{answer}}">
+    </firebase-document>
+
+    <paper-input label="[[title]]" value="[[answer]]"></paper-input>
+
+  </template>
+
+  <script>
+    (function(Polymer) {
+      Polymer({
+        is: 'tm-question',
+        properties: {
+          instance: {
+            type:String,
+            notify:true
+          },
+          key: {
+            type:String,
+            notify:true
+          },
+          answer: {
+            type: String,
+            notify: true
+          }
+        },
+        observers: [
+          'debug(children)'
+        ],
+        debug: function(object) {
+          console.log({m:'scratch', o:object});
+        },
+        ready: function() {
+          console.log('tm-question has been created.');
+        }
+      });
+    })(window.Polymer);
+  </script>
+</dom-module>

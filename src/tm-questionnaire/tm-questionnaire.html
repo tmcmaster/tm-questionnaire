@@ -1,0 +1,86 @@
+<dom-module id="tm-questionnaire">
+  <template>
+    <style>
+      :host {
+        display:inline-block;
+        box-sizing:border-box;
+      }
+      h2 {
+        text-align:center
+      }
+    </style>
+
+    <firebase-document
+      app-name="questionnaire-f54f6"
+      path="/data/questionnaire/[[key]]"
+      data="{{object}}">
+    </firebase-document>
+
+    <firebase-document
+      app-name="questionnaire-f54f6"
+      path="/data/answers/[[instance]]"
+      data="{{answers}}">
+    </firebase-document>
+
+    <firebase-query
+      app-name="questionnaire-f54f6"
+      path="/data/page"
+      order-by-child="questionnaire"
+      equal-to="[[key]]"
+      data="{{children}}">
+    </firebase-query>
+
+    <h2>Questionnaire ([[key]]) [[object.title]]</h2>
+    <tm-gridpanel size="medium">
+      <paper-input label="Key" value="[[key]]"></paper-input>
+      <paper-input label="Title" value="[[object.title]]"></paper-input>
+      <paper-input label="PageKey" value="[[child]]"></paper-input>
+      <tm-dropdown-menu label="Page" items="{{children}}" selected="{{child}}" ></tm-dropdown-menu>
+      <tm-page class="triple" key="[[child]]" instance="[[instance]]"></tm-page>
+    </tm-gridpanel>
+
+  </template>
+
+  <script>
+    (function(Polymer) {
+      Polymer({
+        is: 'tm-questionnaire',
+        properties: {
+          object: {
+            type:Object,
+            notify:true
+          },
+          key: {
+            type:String,
+            notify:true
+          },
+          children: {
+            type: Array,
+            notify: true
+          },
+          child: {
+            type: String,
+            notify: true
+          },
+          instance: {
+            type:String,
+            notify:true
+          },
+          answers: {
+            type: Object,
+            notify: true
+          }
+        },
+        observers: [
+          'debug(instance)'
+        ],
+        debug: function(object) {
+          console.log({m:'questionnaire:instance', o:object});
+        },
+        ready: function() {
+          console.log('tm-scratch has been created.');
+        }
+      });
+    })(window.Polymer);
+  </script>
+</dom-module>

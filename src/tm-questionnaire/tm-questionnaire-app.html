@@ -1,244 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-
-<link rel="import" href="../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../bower_components/paper-drawer-panel/paper-drawer-panel.html">
-<link rel="import" href="../../bower_components/paper-header-panel/paper-header-panel.html">
-<link rel="import" href="../../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
-<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
-<link rel="import" href="../../bower_components/paper-card/paper-card.html">
-<link rel="import" href="../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
-<link rel="import" href="../../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-
-<link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
-<link rel="import" href="../../bower_components/polymerfire/firebase-auth.html">
-<link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
-<link rel="import" href="../../bower_components/polymerfire/firebase-query.html">
-
-<link rel="import" href="tm-dropdown-menu.html">
-<link rel="import" href="tm-gridpanel.html">
-<link rel="import" href="tm-app.html">
-<link rel="import" href="tm-firebase.html">
-
-<dom-module id="tm-questionnaire">
-  <template>
-    <style>
-      :host {
-        display:inline-block;
-        box-sizing:border-box;
-      }
-      h2 {
-        text-align:center
-      }
-    </style>
-
-    <firebase-document
-      app-name="questionnaire-f54f6"
-      path="/data/questionnaire/[[key]]"
-      data="{{object}}">
-    </firebase-document>
-
-    <firebase-document
-      app-name="questionnaire-f54f6"
-      path="/data/answers/[[instance]]"
-      data="{{answers}}">
-    </firebase-document>
-
-    <firebase-query
-      app-name="questionnaire-f54f6"
-      path="/data/page"
-      order-by-child="questionnaire"
-      equal-to="[[key]]"
-      data="{{children}}">
-    </firebase-query>
-
-    <h2>Questionnaire ([[key]]) [[object.title]]</h2>
-    <tm-gridpanel size="medium">
-      <paper-input label="Key" value="[[key]]"></paper-input>
-      <paper-input label="Title" value="[[object.title]]"></paper-input>
-      <paper-input label="PageKey" value="[[child]]"></paper-input>
-      <tm-dropdown-menu label="Page" items="{{children}}" selected="{{child}}" ></tm-dropdown-menu>
-      <tm-page class="triple" key="[[child]]" instance="[[instance]]"></tm-page>
-    </tm-gridpanel>
-
-  </template>
-
-  <script>
-    (function(Polymer) {
-      Polymer({
-        is: 'tm-questionnaire',
-        properties: {
-          object: {
-            type:Object,
-            notify:true
-          },
-          key: {
-            type:String,
-            notify:true
-          },
-          children: {
-            type: Array,
-            notify: true
-          },
-          child: {
-            type: String,
-            notify: true
-          },
-          instance: {
-            type:String,
-            notify:true
-          },
-          answers: {
-            type: Object,
-            notify: true
-          }
-        },
-        observers: [
-          'debug(instance)'
-        ],
-        debug: function(object) {
-          console.log({m:'questionnaire:instance', o:object});
-        },
-        ready: function() {
-          console.log('tm-scratch has been created.');
-        }
-      });
-    })(window.Polymer);
-  </script>
-</dom-module>
-
-<dom-module id="tm-page">
-  <template>
-    <style>
-      :host {
-        display:inline-block;
-        box-sizing:border-box;
-      }
-      h2 {
-        text-align:center
-      }
-    </style>
-
-    <firebase-document
-      app-name="questionnaire-f54f6"
-      path="/data/page/[[key]]"
-      data="{{object}}">
-    </firebase-document>
-
-    <firebase-query
-      app-name="questionnaire-f54f6"
-      path="/data/question"
-      order-by-child="page"
-      equal-to="[[key]]"
-      data="{{children}}">
-    </firebase-query>
-
-    <paper-card heading="[[object.title]]">
-      <tm-gridpanel size="medium">
-        <template is="dom-repeat" items="{{children}}">
-          <tm-question class="double" key="[[item.$key]]" title="[[item.title]]" type="[[item.type]]" instance="[[instance]]"></tm-question>
-        </template>
-      </tm-gridpanel>
-    </paper-card>
-  </template>
-
-  <script>
-    (function(Polymer) {
-      Polymer({
-        is: 'tm-page',
-        properties: {
-          object: {
-            type:Object,
-            notify:true
-          },
-          key: {
-            type:String,
-            notify:true
-          },
-          instance: {
-            type:String,
-            notify:true
-          },
-          children: {
-            type: Array,
-            notify: true
-          },
-          child: {
-            type: String,
-            notify: true
-          }
-        },
-        observers: [
-          'debug(children)'
-        ],
-        debug: function(object) {
-          console.log({m:'scratch', o:object});
-        },
-        ready: function() {
-          console.log('tm-scratch has been created.');
-        }
-      });
-    })(window.Polymer);
-  </script>
-</dom-module>
-
-<dom-module id="tm-question">
-  <template>
-    <style>
-      :host {
-        display:inline-block;
-        box-sizing:border-box;
-      }
-      h2 {
-        text-align:center
-      }
-    </style>
-
-    <firebase-document
-      app-name="questionnaire-f54f6"
-      path="/data/answers/[[instance]]/[[key]]"
-      data="{{answer}}">
-    </firebase-document>
-
-    <paper-input label="[[title]]" value="[[answer]]"></paper-input>
-
-  </template>
-
-  <script>
-    (function(Polymer) {
-      Polymer({
-        is: 'tm-question',
-        properties: {
-          instance: {
-            type:String,
-            notify:true
-          },
-          key: {
-            type:String,
-            notify:true
-          },
-          answer: {
-            type: String,
-            notify: true
-          }
-        },
-        observers: [
-          'debug(children)'
-        ],
-        debug: function(object) {
-          console.log({m:'scratch', o:object});
-        },
-        ready: function() {
-          console.log('tm-question has been created.');
-        }
-      });
-    })(window.Polymer);
-  </script>
-</dom-module>
+<link rel="import" href="tm-elements.html">
 
 <dom-module id="tm-questionnaire-app">
   <template>
@@ -279,12 +40,6 @@
           data="{{pages}}">
         </firebase-query>
 
-        <firebase-query id="pageList"
-          app-name="questionnaire-f54f6"
-          path="/scratch/questionnaire"
-          data="{{scratchQuestionnaires}}">
-        </firebase-query>
-
       </tm-firebase>
       <tm-gridpanel size="large">
         <paper-input label="Questionnaire Key" value="[[questionnaireKey]]"></paper-input>
@@ -295,17 +50,10 @@
         <tm-dropdown-menu label="Page" items="{{pages}}" selected="{{pageKey}}" ></tm-dropdown-menu>
       </tm-gridpanel>
       <div>
+        Edit Section Incomplete
+      </div>
+      <div>
         <tm-questionnaire key="questionnaire001" instance="[[instanceKey]]"></tm-questionnaire>
-      </div>
-      <div>
-        <template is="dom-repeat" items="[[scratchQuestionnaires]]" as="q">
-          <template is="dom-repeat" items="[[_toArray(q.pages)]]" as="p">
-            <tm-page key="[[p.name]]"></tm-page>
-          </template>
-        </template>
-      </div>
-      <div>
-
       </div>
     </tm-app>
 
@@ -366,17 +114,6 @@
         observers: [
           'debug(scratchQuestionnaires)'
         ],
-        _toArray: function(obj) {
-            if (obj === null || obj === undefined) {
-              return "";
-            }
-            return Object.keys(obj).map(function(key) {
-                return {
-                    name: key,
-                    value: obj[key]
-                };
-            });
-        },
         debug: function(object) {
           console.log({m:'scratchQuestionnaires', o:object});
         },
