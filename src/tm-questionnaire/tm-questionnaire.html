@@ -1,12 +1,33 @@
+<link rel="import" href="../../bower_components/iron-swipeable-pages/iron-swipeable-pages.html">
+
+
 <dom-module id="tm-questionnaire">
   <template>
     <style>
       :host {
         display:inline-block;
         box-sizing:border-box;
+        width:100%;
+        height:90%;
+        //border:solid red 3px;
       }
       h2 {
         text-align:center
+      }
+      tm-page {
+        height:80%;
+      }
+      iron-swipeable-pages  > * {
+        height:100%;
+        width:100%;
+      }
+      iron-swipeable-pages {
+        display:inline-block;
+        box-sizing:border-box;
+        //padding:40px 80px 40px 80px;
+        width:100%;
+        height:100%;
+        //border:solid green 3px;
       }
     </style>
 
@@ -30,14 +51,12 @@
       data="{{children}}">
     </firebase-query>
 
-    <h2>Questionnaire ([[key]]) [[object.title]]</h2>
-    <tm-gridpanel size="medium">
-      <paper-input label="Key" value="[[key]]"></paper-input>
-      <paper-input label="Title" value="[[object.title]]"></paper-input>
-      <paper-input label="PageKey" value="[[child]]"></paper-input>
-      <tm-dropdown-menu label="Page" items="{{children}}" selected="{{child}}" ></tm-dropdown-menu>
-      <tm-page class="triple" key="[[child]]" instance="[[instance]]"></tm-page>
-    </tm-gridpanel>
+    <h2>[[object.title]]</h2>
+    <iron-swipeable-pages class="triple" no-cycle selected="0">
+      <template is="dom-repeat" items="[[children]]">
+        <tm-page key="[[item.$key]]" instance="[[instance]]"></tm-page>
+      </template>
+    </iron-swipeable-pages>
 
   </template>
 
