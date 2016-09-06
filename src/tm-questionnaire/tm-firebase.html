@@ -20,7 +20,7 @@
       database-url="[[databaseUrl]]">
     </firebase-app>
 
-    <firebase-auth id="aaaaa"
+    <firebase-auth id="auth"
       app-name="[[appName]]"
       user="{{user}}"
       signed-in="{{signedIn}}"
@@ -81,7 +81,8 @@
       },
       ready: function() {
         console.log('tm-firebase has been created.');
-        //this.$.aaaaa.signInWithPopup();
+        //this.$.auth.signInWithEmailAndPassword('tim@mcmaster.id.au', 'asdfgh');
+        //this.$.auth.signInWithPopup();
       }
     });
   })(window.Polymer);

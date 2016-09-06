@@ -1,0 +1,82 @@
+{
+  "answers": {
+    "instance001": {
+      "question001": "Answer One",
+      "question002": "Answer Two",
+      "question003": "Answer Three",
+      "question004": "Answer Four",
+      "question005": "Answer Five"
+    },
+    "instance002" : {
+      "question001": "Answer AAA",
+      "question002": "Answer BBB",
+      "question003": "Answer CCC",
+      "question004": "Answer DDD",
+      "question005": "answer EEE"
+    }
+  },
+  "instance": {
+    "instance001": {
+      "questionnaire": "questionnaire001",
+      "title": "Instance One"
+    },
+    "instance002": {
+      "questionnaire": "questionnaire001",
+      "title": "Instance Two"
+    }
+  },
+  "page": {
+    "page001": {
+      "questionnaire": "questionnaire001",
+      "title": "Page One"
+    },
+    "page002": {
+      "questionnaire": "questionnaire001",
+      "title": "Page Two"
+    },
+    "page003": {
+      "questionnaire": "questionnaire002",
+      "title": "Page Three"
+    }
+  },
+  "question": {
+    "question001": {
+      "display": "paper-input",
+      "page": "page001",
+      "title": "Question One",
+      "type": "String"
+    },
+    "question002": {
+      "display": "paper-input",
+      "page": "page001",
+      "title": "Question Two",
+      "type": "String"
+    },
+    "question003": {
+      "display": "paper-input",
+      "page": "page001",
+      "title": "Question Three",
+      "type": "String"
+    },
+    "question004": {
+      "display": "paper-input",
+      "page": "page002",
+      "title": "Question Four",
+      "type": "String"
+    },
+    "question005": {
+      "display": "paper-input",
+      "page": "page003",
+      "title": "Question Five",
+      "type": "String"
+    }
+  },
+  "questionnaire": {
+    "questionnaire001": {
+      "title": "Questionnaire One"
+    },
+    "questionnaire002": {
+      "title": "Questionnaire Two"
+    }
+  }
+}

@@ -1,0 +1,62 @@
+<dom-module id="tm-questionnaire">
+  <template>
+    <style>
+      :host {
+        display:inline-block;
+        box-sizing:border-box;
+      }
+    </style>
+
+    <firebase-document
+      app-name="questionnaire-f54f6"
+      path="/scratch/questionnaire/[[key]]"
+      data="{{object}}">
+    </firebase-document>
+
+    <paper-card>
+      <h2>Questionnaire ([[key]]) [[object.title]]</h2>
+      <template is="dom-repeat" items="[[_toArray(object.pages)]]" as="p">
+        <tm-page key="[[p.name]]"></tm-page>
+      </template>
+    </paper-card>
+
+  </template>
+
+  <script>
+    (function(Polymer) {
+      Polymer({
+        is: 'tm-questionnaire',
+        properties: {
+          object: {
+            type:Object,
+            notify:true
+          },
+          key: {
+            type:String,
+            notify:true
+          }
+        },
+        observers: [
+          'debug(key)'
+        ],
+        _toArray: function(obj) {
+            if (obj === null || obj === undefined) {
+              return "";
+            }
+            return Object.keys(obj).map(function(key) {
+                return {
+                    name: key,
+                    value: obj[key]
+                };
+            });
+        },
+        debug: function(object) {
+          console.log({m:'scratch', o:object});
+        },
+        ready: function() {
+          console.log('tm-scratch has been created.');
+        }
+      });
+    })(window.Polymer);
+  </script>
+</dom-module>
