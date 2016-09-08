@@ -1,7 +1,12 @@
 <dom-module id="tm-firebase">
   <template>
     <style>
-
+      .buttons {
+        width:100%;
+      }
+      .buttons > paper-button {
+        float:right;
+      }
     </style>
 
     <firebase-app
@@ -28,6 +33,10 @@
       <paper-input label="Auth Domain" disabled value="{{authDomain}}"></paper-input>
       <paper-input label="Database URL" disabled value="{{databaseUrl}}"></paper-input>
     </tm-gridpanel>
+    <div class="buttons">
+      <paper-button on-tap="_signOut" disabled$="{{_disableSignOut(signedIn)}}">Sign Out</paper-button>
+      <paper-button on-tap="_signIn" disabled$="{{_disableSignIn(signedIn)}}">Sign In</paper-button>
+    </div>
   </template>
   <script>
   (function(Polymer) {
@@ -67,6 +76,18 @@
       observers: [
         'debug(items)'
       ],
+      _disableSignIn: function(signedIn) {
+        return signedIn;
+      },
+      _disableSignOut: function(signedIn) {
+        return !signedIn;
+      },
+      _signIn: function() {
+        this.$.auth.signInWithPopup();
+      },
+      _signOut: function() {
+        this.$.auth.signOut();
+      },
       debug: function(o) {
         console.log({m:'Items', o:o});
       },
