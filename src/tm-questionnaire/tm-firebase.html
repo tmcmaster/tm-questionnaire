@@ -9,8 +9,9 @@
       }
     </style>
 
-    <firebase-app
+    <firebase-app id="firebase"
       name="[[appName]]"
+      app="{{app}}"
       api-key="[[appKey]]"
       auth-domain="[[authDomain]]"
       database-url="[[databaseUrl]]">
@@ -68,13 +69,17 @@
           notify:true,
           value: false
         },
+        app : {
+          type:Object,
+          notify: true,
+        },
         provider: {
           type: String,
           notify:true
         }
       },
       observers: [
-        'debug(items)'
+        'debug(app)'
       ],
       _disableSignIn: function(signedIn) {
         return signedIn;
@@ -83,16 +88,24 @@
         return !signedIn;
       },
       _signIn: function() {
-        this.$.auth.signInWithPopup();
+        this.$.auth.signInWithPopup()
+          .then(function(response) {
+            console.log({m:"SIGN IN (success)", o:response});
+
+          }).catch(function(error) {
+            console.log({m:"SIGN IN (error)", o:error});
+          });
       },
       _signOut: function() {
         this.$.auth.signOut();
       },
       debug: function(o) {
-        console.log({m:'Items', o:o});
+        console.log({m:'FIREBASE-APP', o:o});
       },
       ready: function() {
         console.log('tm-firebase has been created.');
+        var f = this.$.firebase;
+        console.log(f);
         //this.$.auth.signInWithEmailAndPassword('tim@mcmaster.id.au', 'asdfgh');
         //this.$.auth.signInWithPopup();
       }

@@ -4,14 +4,22 @@
 <dom-module id="tm-questionnaire-app">
   <template>
     <style>
+      tm-gridpanel {
+        width:100%;
+      }
     </style>
 
-    <tm-app app-title="Questionnaire" titles="Authorisation,Select,Edit,Run" selected="3">
+    <tm-fullscreen fullscreen="{{userSettings.fullscreen}}"></tm-fullscreen>
+
+    <tm-app app-title="Questionnaire" titles="Authorisation,Select,Edit,Run,Settings" selected="3">
+
       <tm-firebase
         app-name="questionnaire-f54f6"
         app-key="AIzaSyCFp-qmqmnzZr_XRNVW3GnkTyk18ZlwW0s"
         auth-domain="questionnaire-f54f6.firebaseapp.com"
         database-url="https://questionnaire-f54f6.firebaseio.com"
+        user="{{user}}"
+        app="{{app}}"
         provider="google">
 
         <firebase-query id="questionnaireList"
@@ -42,6 +50,7 @@
 
       </tm-firebase>
       <tm-gridpanel size="large">
+        <paper-input label="Path to settings" value="/data/settings/[[user.uid]]"></paper-input>
         <paper-input label="Questionnaire Key" value="[[questionnaireKey]]"></paper-input>
         <paper-input label="Instance Key" value="[[instanceKey]]"></paper-input>
         <paper-input label="Page Key" value="[[pageKey]]"></paper-input>
@@ -53,12 +62,13 @@
         Edit Section Incomplete
       </div>
       <tm-questionnaire key="questionnaire001" instance="[[instanceKey]]"></tm-questionnaire>
+      <tm-settings app="[[app]]" uid="[[user.uid]]" settings="{{userSettings}}" path="/data/settings"></tm-settings>
     </tm-app>
 
   </template>
 
   <script>
-    (function(Polymer) {
+    (function(Polymer, firebase) {
       Polymer({
         is: 'tm-questionnaire-app',
         properties: {
@@ -108,17 +118,56 @@
               title: 'a page'
             }
           },
+          app: {
+            type:Object
+          },
+          user: {
+            type: Object,
+            notify: true,
+            observer:'_userUpdated'
+          },
+          userSettings: {
+            type: Object,
+            notify: true
+          }
         },
         observers: [
-          'debug(scratchQuestionnaires)'
+          'debug(userSettings)'
         ],
+        _userUpdated: function(user) {
+          console.log({m:'User Updated', o:user});
+          // if (user !== null && user.uid !== undefined) {
+          //   var self = this;
+          //   this.app.database().ref('/data/settings/' + user.uid).once('value', function(snapshot) {
+          //     var value = snapshot.val();
+          //     if (value === null) {
+          //       self.userSettings = {fullscreen: false};
+          //       self.$.usersettings.save('/data/settings',user.uid);
+          //       console.log({m:'Added user settings for ' + user.uid, o:self.userSettings});
+          //     }
+          //   });
+          // }
+
+          //console.log({m:'User Settings: create if required', o:self.userSettings});
+        },
+        _errorGettingSettings: function(error) {
+          console.log('SETTINGS ERROR: ' + error);
+        },
         debug: function(object) {
-          console.log({m:'scratchQuestionnaires', o:object});
+          console.log({m:'SETTINGS', o:object});
         },
         ready: function() {
           console.log('tm-questionnaire-app has been created.');
+          console.log({m:"FIREBASE", o:this.app});
+          // var self = this;
+          // setTimeout(function() {
+            // self.app.database().ref('/data/settings').once('value', function(snapshot) {
+            //   var value = snapshot.val();
+            //   console.log({m:'AAAAAAAAAAA', o:value});
+            // });
+          // }, 2000);
         }
       });
-    })(window.Polymer);
+    })(window.Polymer, window.firebase);
   </script>
 </dom-module>

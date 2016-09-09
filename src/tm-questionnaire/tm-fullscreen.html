@@ -1,0 +1,47 @@
+<dom-module id="tm-fullscreen">
+  <template>
+    <style>
+    </style>
+
+    <fullscreen-api id="fsapi" fullscreen="{{_isFullscreen}}" fullscreen-available="{{fullscreenAvailable}}"></fullscreen-api>
+  </template>
+
+  <script>
+    (function(Polymer) {
+      Polymer({
+        is: 'tm-fullscreen',
+        properties: {
+          fullscreen: {
+            type:Boolean,
+            notify:true,
+            observer: '_adjustFullscreen'
+          },
+          _isFullscreen: {
+            type:Boolean,
+            notify:true
+          },
+          fullscreenAvailable: {
+            type:Boolean,
+            notify:true
+          }
+        },
+        observers: [
+          'debug(fullscreen)'
+        ],
+        _adjustFullscreen: function() {
+          if (this.fullscreen && !this._isFullscreen || !this.fullscreen && this._isFullscreen)
+          {
+            console.log('Changing fullscreen mode: ' + this.fullscreen);
+            this.$.fsapi.toggleFullscreen();
+          }
+        },
+        debug: function(object) {
+          console.log({m:'fullscreen', o:object});
+        },
+        ready: function() {
+          console.log('tm-fullscreen has been created.');
+        }
+      });
+    })(window.Polymer);
+  </script>
+</dom-module>

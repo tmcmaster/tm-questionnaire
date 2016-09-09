@@ -1,0 +1,79 @@
+<dom-module id="tm-settings">
+  <template>
+    <style>
+      :host {
+        display:inline-block;
+        box-sizing:border-box;
+        width:100%;
+      }
+      tm-gridpanel {
+        width:100%;
+      }
+    </style>
+
+    <firebase-document id="usersettings" log
+      app-name="questionnaire-f54f6"
+      path="[[path]]/[[uid]]"
+      on-error="_errorGettingSettings"
+      data="{{settings}}">
+    </firebase-document>
+
+    <tm-gridpanel size="medium">
+      <paper-toggle-button checked="{{settings.fullscreen}}">Fullscreen Mode</paper-toggle-button>
+    </tm-gridpanel>
+
+  </template>
+
+  <script>
+    (function(Polymer) {
+      Polymer({
+        is: 'tm-settings',
+        properties: {
+          settings: {
+            type:Object,
+            notify:true,
+            value: {
+              fullscreen: false
+            }
+          },
+          path: {
+            type: String,
+            notify: true
+          },
+          uid : {
+            type: String,
+            notify: true
+          },
+          app: {
+            type: Object,
+            notify: true
+          }
+        },
+        observers: [
+          'debug(app)',
+          '_userUpdated(uid,app,path)'
+        ],
+        _userUpdated: function(uid, app, path) {
+          console.log({m:'User Updated', o:uid});
+          if (uid !== null && uid !== undefined) {
+            var self = this;
+            this.app.database().ref(path + uid).once('value', function(snapshot) {
+              var value = snapshot.val();
+              if (value === null) {
+                self.settings = {fullscreen: false, aaa: 'AAA'};
+                self.$.usersettings.save(path, uid);
+                console.log({m:'Added user settings for ' + uid, o:self.settings});
+              }
+            });
+          }
+        },
+        debug: function(object) {
+          console.log({m:'app', o:object});
+        },
+        ready: function() {
+          console.log('tm-settings has been created.');
+        }
+      });
+    })(window.Polymer);
+  </script>
+</dom-module>
