@@ -81,14 +81,17 @@
             notify: true
           }
         },
+        behaviors: [
+          Polymer.TM.LoggingBehavior
+        ],
         observers: [
           'debug(children)'
         ],
         debug: function(object) {
-          console.log({m:'scratch', o:object});
+          this.log.debug({m:'scratch', o:object});
         },
         ready: function() {
-          console.log('tm-scratch has been created.');
+          this.log.debug('TM-PAGE has been created.');
         }
       });
     })(window.Polymer);

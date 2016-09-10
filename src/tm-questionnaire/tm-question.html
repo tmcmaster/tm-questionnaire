@@ -38,14 +38,17 @@
             notify: true
           }
         },
+        behaviors: [
+          Polymer.TM.LoggingBehavior
+        ],
         observers: [
           'debug(children)'
         ],
         debug: function(object) {
-          console.log({m:'scratch', o:object});
+          this.log.debug({m:'scratch', o:object});
         },
         ready: function() {
-          console.log('tm-question has been created.');
+          this.log.debug('tm-question has been created.');
         }
       });
     })(window.Polymer);

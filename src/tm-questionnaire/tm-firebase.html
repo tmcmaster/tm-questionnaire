@@ -78,6 +78,9 @@
           notify:true
         }
       },
+      behaviors: [
+        Polymer.TM.LoggingBehavior
+      ],
       observers: [
         'debug(app)'
       ],
@@ -90,22 +93,22 @@
       _signIn: function() {
         this.$.auth.signInWithPopup()
           .then(function(response) {
-            console.log({m:"SIGN IN (success)", o:response});
+            this.log.debug({m:"SIGN IN (success)", o:response});
 
           }).catch(function(error) {
-            console.log({m:"SIGN IN (error)", o:error});
+            this.log.debug({m:"SIGN IN (error)", o:error});
           });
       },
       _signOut: function() {
         this.$.auth.signOut();
       },
       debug: function(o) {
-        console.log({m:'FIREBASE-APP', o:o});
+        this.log.debug({m:'FIREBASE-APP', o:o});
       },
       ready: function() {
-        console.log('tm-firebase has been created.');
+        this.log.debug('tm-firebase has been created.');
         var f = this.$.firebase;
-        console.log(f);
+        this.log.debug(f);
         //this.$.auth.signInWithEmailAndPassword('tim@mcmaster.id.au', 'asdfgh');
         //this.$.auth.signInWithPopup();
       }

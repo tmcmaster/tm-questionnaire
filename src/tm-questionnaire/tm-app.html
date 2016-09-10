@@ -97,6 +97,9 @@
             computed: '_getPageTitle(selected,pageTitles)'
           }
         },
+        behaviors: [
+          Polymer.TM.LoggingBehavior
+        ],
         observers: [
           'debug(pageTitles)'
         ],
@@ -104,28 +107,28 @@
           'menu.iron-select': '_menuSelected'
         },
         _getPageTitle: function(selected, pageTitles) {
-          console.log('_getPageTitle: ' + selected);
+          this.log.debug('_getPageTitle: ' + selected);
           return (pageTitles === undefined ? "" : pageTitles[selected]);
         },
         _createPageTitles: function(titles) {
-          console.log('_createPageTitles: ' + titles);
+          this.log.debug('_createPageTitles: ' + titles);
           var newTitles = titles.split(',');
           return newTitles;
         },
         _updatePageTitles: function(titles) {
-          console.log('_updatePageTitles: ' + titles);
+          this.log.debug('_updatePageTitles: ' + titles);
           this.pageTitles = ['A','B','C','D'];
           this.notifyPath("pageTitles", this.pageTitles.slice());
         },
         _menuSelected: function() {
-          console.log('sadfsadfsdaf');
+          this.log.debug('sadfsadfsdaf');
           this.$.drawer.closeDrawer();
         },
         debug: function(o) {
-          console.log({m:'Page Titles', o:o});
+          this.log.debug({m:'Page Titles', o:o});
         },
         ready: function() {
-          console.log('tm-gridpanel has been created.');
+          this.log.debug('tm-app has been created.');
         }
       });
     })(window.Polymer);

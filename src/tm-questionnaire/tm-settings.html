@@ -11,7 +11,7 @@
       }
     </style>
 
-    <firebase-document id="usersettings" log
+    <firebase-document id="usersettings"
       app-name="questionnaire-f54f6"
       path="[[path]]/[[uid]]"
       on-error="_errorGettingSettings"
@@ -49,12 +49,15 @@
             notify: true
           }
         },
+        behaviors: [
+          Polymer.TM.LoggingBehavior
+        ],
         observers: [
           'debug(app)',
           '_userUpdated(uid,app,path)'
         ],
         _userUpdated: function(uid, app, path) {
-          console.log({m:'User Updated', o:uid});
+          this.log.debug({m:'User Updated', o:uid});
           if (uid !== null && uid !== undefined) {
             var self = this;
             this.app.database().ref(path + uid).once('value', function(snapshot) {
@@ -62,16 +65,16 @@
               if (value === null) {
                 self.settings = {fullscreen: false, aaa: 'AAA'};
                 self.$.usersettings.save(path, uid);
-                console.log({m:'Added user settings for ' + uid, o:self.settings});
+                self.log.debug({m:'Added user settings for ' + uid, o:self.settings});
               }
             });
           }
         },
         debug: function(object) {
-          console.log({m:'app', o:object});
+          this.log.debug({m:'app', o:object});
         },
         ready: function() {
-          console.log('tm-settings has been created.');
+          this.log.debug('tm-settings has been created.');
         }
       });
     })(window.Polymer);

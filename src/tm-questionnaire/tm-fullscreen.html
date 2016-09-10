@@ -25,21 +25,24 @@
             notify:true
           }
         },
+        behaviors: [
+          Polymer.TM.LoggingBehavior
+        ],
         observers: [
           'debug(fullscreen)'
         ],
         _adjustFullscreen: function() {
           if (this.fullscreen && !this._isFullscreen || !this.fullscreen && this._isFullscreen)
           {
-            console.log('Changing fullscreen mode: ' + this.fullscreen);
+            this.log.debug('Changing fullscreen mode: ' + this.fullscreen);
             this.$.fsapi.toggleFullscreen();
           }
         },
         debug: function(object) {
-          console.log({m:'fullscreen', o:object});
+          this.log.debug({m:'fullscreen', o:object});
         },
         ready: function() {
-          console.log('tm-fullscreen has been created.');
+          this.log.debug('tm-fullscreen has been created.');
         }
       });
     })(window.Polymer);

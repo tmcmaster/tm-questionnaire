@@ -1,0 +1,62 @@
+<link rel="import" href="../../bower_components/console-log/console-log.html">
+
+<script type="text/javascript" src="../../bower_components/log4javascript/log4javascript.js"></script>
+
+<script>
+
+window.Polymer.TM = (window.Polymer.TM  === undefined ? {} : window.Polymer.TM);
+
+(function(Polymer, log4javascript) {
+
+  function createLogger(loggerName) {
+    var log = log4javascript.getLogger(loggerName);
+    var appender = new log4javascript.BrowserConsoleAppender();
+    var layout = new log4javascript.PatternLayout("%c [%-5p] %m");
+    appender.setLayout(layout);
+    log.addAppender(appender);
+    log.setLevel(LOG_LEVEL_MAP['error']);
+    return log;
+  }
+
+  var LOG_LEVEL_MAP = {
+    'all' : log4javascript.Level.ALL,
+    'trace' : log4javascript.Level.TRACE,
+    'debug' : log4javascript.Level.DEBUG,
+    'info' : log4javascript.Level.INFO,
+    'warn' : log4javascript.Level.WARN,
+    'fatal' : log4javascript.Level.FATAL,
+    'error' : log4javascript.Level.ERROR,
+    'off' : log4javascript.Level.OFF
+  }
+
+  Polymer.TM.LoggingBehavior = {
+    properties: {
+      logLevel: {
+        type: String,
+        value: 'error',
+        notify: true,
+        observer: '_setLogLevel'
+      }
+    },
+    observers: [
+      '_debug(logLevel)'
+    ],
+    log: createLogger('anonymous'),
+    _setLogLevel: function() {
+      if (this.log !== undefined && this.logLevel !== undefined && LOG_LEVEL_MAP.hasOwnProperty(this.logLevel)) {
+        this.log.setLevel(LOG_LEVEL_MAP[this.logLevel]);
+      }
+    },
+    _debug: function(object) {
+      this.log.debug('LOGGER: logLevel:' + this.logLevel);
+    },
+    created: function() {
+      this.log = createLogger(this.localName);
+      this.log.debug('Logging has been setup.');
+    }
+  };
+
+
+})(window.Polymer, window.log4javascript);
+
+</script>

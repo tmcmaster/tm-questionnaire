@@ -11,7 +11,7 @@
 
     <tm-fullscreen fullscreen="{{userSettings.fullscreen}}"></tm-fullscreen>
 
-    <tm-app app-title="Questionnaire" titles="Authorisation,Select,Edit,Run,Settings" selected="3">
+    <tm-app app-title="Questionnaire" titles="Authorisation,Select,Edit,Run,Settings" selected="3" log-level="error">
 
       <tm-firebase
         app-name="questionnaire-f54f6"
@@ -50,7 +50,6 @@
 
       </tm-firebase>
       <tm-gridpanel size="large">
-        <paper-input label="Path to settings" value="/data/settings/[[user.uid]]"></paper-input>
         <paper-input label="Questionnaire Key" value="[[questionnaireKey]]"></paper-input>
         <paper-input label="Instance Key" value="[[instanceKey]]"></paper-input>
         <paper-input label="Page Key" value="[[pageKey]]"></paper-input>
@@ -123,49 +122,22 @@
           },
           user: {
             type: Object,
-            notify: true,
-            observer:'_userUpdated'
+            notify: true
           },
           userSettings: {
             type: Object,
             notify: true
           }
         },
+        behaviors: [Polymer.TM.LoggingBehavior],
         observers: [
-          'debug(userSettings)'
+          'debug(questionnaireKey)'
         ],
-        _userUpdated: function(user) {
-          console.log({m:'User Updated', o:user});
-          // if (user !== null && user.uid !== undefined) {
-          //   var self = this;
-          //   this.app.database().ref('/data/settings/' + user.uid).once('value', function(snapshot) {
-          //     var value = snapshot.val();
-          //     if (value === null) {
-          //       self.userSettings = {fullscreen: false};
-          //       self.$.usersettings.save('/data/settings',user.uid);
-          //       console.log({m:'Added user settings for ' + user.uid, o:self.userSettings});
-          //     }
-          //   });
-          // }
-
-          //console.log({m:'User Settings: create if required', o:self.userSettings});
-        },
-        _errorGettingSettings: function(error) {
-          console.log('SETTINGS ERROR: ' + error);
-        },
         debug: function(object) {
-          console.log({m:'SETTINGS', o:object});
+          this.log.debug('questionnaireKey: ' + JSON.stringify(object));
         },
         ready: function() {
-          console.log('tm-questionnaire-app has been created.');
-          console.log({m:"FIREBASE", o:this.app});
-          // var self = this;
-          // setTimeout(function() {
-            // self.app.database().ref('/data/settings').once('value', function(snapshot) {
-            //   var value = snapshot.val();
-            //   console.log({m:'AAAAAAAAAAA', o:value});
-            // });
-          // }, 2000);
+          this.log.debug('Component created.');
         }
       });
     })(window.Polymer, window.firebase);

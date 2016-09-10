@@ -30,13 +30,16 @@
             notify:true
           }
         },
+        behaviors: [
+          Polymer.TM.LoggingBehavior
+        ],
         observers: [
           'debug(items)',
           '_itemsChanged(items.splices)'
         ],
         _itemsChanged: function(items) {
-          // console.log('ARRAY CHANGED');
-          // console.log(items);
+          // this.log.debug('ARRAY CHANGED');
+          // this.log.debug(items);
           if (items === undefined || items.length === 0) {
             this.selected = '';
           } else if ((this.selected === undefined || this.selected === '')) {
@@ -46,11 +49,11 @@
           }
         },
         debug: function(o) {
-          // console.log({m:'Items', o:o});
-          // console.log({m:'Items Length' +  o.length});
+          // this.log.debug({m:'Items', o:o});
+          // this.log.debug({m:'Items Length' +  o.length});
         },
         ready: function() {
-          console.log('tm-selector has been created.');
+          this.log.debug('tm-selector has been created.');
         }
       });
     })(window.Polymer);

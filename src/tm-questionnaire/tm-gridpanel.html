@@ -81,14 +81,17 @@
             notify: true
           }
         },
+        behaviors: [
+          Polymer.TM.LoggingBehavior
+        ],
         observers: [
           'debug(items)'
         ],
         debug: function(o) {
-          console.log({m:'Items', o:o});
+          this.log.debug({m:'Items', o:o});
         },
         ready: function() {
-          console.log('tm-gridpanel has been created.');
+          this.log.debug('tm-gridpanel has been created.');
         }
       });
     })(window.Polymer);

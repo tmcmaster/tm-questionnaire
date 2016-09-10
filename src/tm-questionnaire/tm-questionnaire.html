@@ -97,14 +97,17 @@
             notify: true
           }
         },
+        behaviors: [
+          Polymer.TM.LoggingBehavior
+        ],
         observers: [
           'debug(instance)'
         ],
         debug: function(object) {
-          console.log({m:'questionnaire:instance', o:object});
+          this.log.debug({m:'questionnaire:instance', o:object});
         },
         ready: function() {
-          console.log('tm-scratch has been created.');
+          this.log.debug('tm-scratch has been created.');
         }
       });
     })(window.Polymer);
